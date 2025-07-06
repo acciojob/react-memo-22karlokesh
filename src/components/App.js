@@ -1,85 +1,85 @@
 // <p>Now I can render any React component on any DOM node I want using ReactDOM.render</p>
 
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 
-const ReactMemoComponent = React.memo(({ skills }) => {
-  console.log('Rendering React.memo Component...');
-  return (
-    <div style={{ marginTop: '20px' }}>
-      <h2>React.memo Example</h2>
-      <ul data-cy="skill-list">
-        {skills.map((skill, index) => (
-          <li key={index}>{skill}</li>
-        ))}
-      </ul>
-    </div>
-  );
+// Memoized Todo component to prevent unnecessary re-renders
+const Todo = React.memo(({ task }) => {
+  console.log('Rendering task:', task); // helpful for checking memoization
+  return <li>{task}</li>;
 });
 
-function App() {
-  const [todos, setTodos] = useState([]);
-  const [skills, setSkills] = useState([]);
-  const [counter, setCounter] = useState(0);
-  const [skillInput, setSkillInput] = useState('');
+export default function App() {
+  const [todos, setTodos] = useState(['First Task']);
+  const [inputValue, setInputValue] = useState('');
+  const [count, setCount] = useState(0);
 
-  const addTodo = () => {
-    setTodos([...todos, 'New todo']);
+  // Expensive calculation simulated with useMemo
+  const expensiveCalculation = useMemo(() => {
+    console.log('Running expensive calculation...');
+    let result = 0;
+    for (let i = 0; i < 1000000; i++) {
+      result += 1;
+    }
+    return result;
+  }, []);
+
+  // Add new default todo
+  const handleAddTodo = () => {
+    setTodos(prev => [...prev, 'New todo']);
   };
 
-  const addSkill = () => {
-    if (skillInput.length > 5) {
-      setSkills([...skills, skillInput]);
-      setSkillInput('');
+  // Add custom todo if valid
+  const handleSubmit = () => {
+    if (inputValue.length > 5) {
+      setTodos(prev => [...prev, inputValue]);
+      setInputValue('');
     } else {
-      alert('Skill must be more than 5 characters.');
+      alert('Task must be more than 5 characters');
     }
   };
 
-  const increment = () => {
-    setCounter(counter + 1);
+  // Increment counter
+  const handleIncrement = () => {
+    setCount(prev => prev + 1);
   };
 
-  const expensiveCount = useMemo(() => {
-    console.log('Calculating expensive value...');
-    return counter * 2;
-  }, [counter]);
+  // Memoize the todo list rendering
+  const memoizedTodos = useMemo(() => {
+    return todos.map((task, index) => <Todo key={index} task={task} />);
+  }, [todos]);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Task Management App with React Memo</h1>
+    <div style={{ padding: '20px', fontFamily: 'Arial' }}>
+      <h1>🗂️ Task Manager</h1>
 
-      {/* Use Memo testing */}
-      <div style={{ marginTop: '20px' }}>
-        <button data-cy="add-todo" onClick={addTodo}>Add todo</button>
-        <ul data-cy="todo-list">
-          {todos.map((todo, index) => (
-            <li key={index}>{todo}</li>
-          ))}
-        </ul>
+      {/* Todo Section */}
+      <div>
+        <button onClick={handleAddTodo}>Add Todo</button>
+        <ul>{memoizedTodos}</ul>
       </div>
 
-      <div style={{ marginTop: '20px' }}>
-        <button onClick={increment}>Increment Counter</button>
-        <p>Counter: {counter}</p>
-        <p>Expensive Count (double): {expensiveCount}</p>
-      </div>
-
-      {/* React Memo testing */}
+      {/* Input Section */}
       <div style={{ marginTop: '20px' }}>
         <input
-          data-cy="skill-input"
           type="text"
-          placeholder="Enter skill > 5 chars"
-          value={skillInput}
-          onChange={(e) => setSkillInput(e.target.value)}
+          value={inputValue}
+          placeholder="Enter a custom task"
+          onChange={e => setInputValue(e.target.value)}
         />
-        <button data-cy="add-skill" onClick={addSkill}>Add skill</button>
+        <button onClick={handleSubmit}>Submit</button>
       </div>
 
-      <ReactMemoComponent skills={skills} />
+      {/* Counter Section */}
+      <div style={{ marginTop: '20px' }}>
+        <h2>🔢 Counter: {count}</h2>
+        <button onClick={handleIncrement}>Increment</button>
+      </div>
+
+      {/* Expensive Calc Display */}
+      <div style={{ marginTop: '20px' }}>
+        <h4>🧠 Expensive Calculation Result: {expensiveCalculation}</h4>
+      </div>
     </div>
   );
 }
-
-export default App;
