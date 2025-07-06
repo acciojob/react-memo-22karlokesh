@@ -1,84 +1,84 @@
 // <p>Now I can render any React component on any DOM node I want using ReactDOM.render</p>
 
 
-import React, { useState, useMemo } from 'react';
 
-// React.memo inline component
-const ReactMemoComponent = React.memo(({ todos }) => {
+ import React, { useState, useMemo } from 'react';
+
+const ReactMemoComponent = React.memo(({ skills }) => {
   console.log('Rendering React.memo Component...');
   return (
     <div style={{ marginTop: '20px' }}>
       <h2>React.memo Example</h2>
-      <p>Total Tasks: {todos.length}</p>
+      <ul data-cy="skill-list">
+        {skills.map((skill, index) => (
+          <li key={index}>{skill}</li>
+        ))}
+      </ul>
     </div>
   );
 });
 
 function App() {
   const [todos, setTodos] = useState([]);
+  const [skills, setSkills] = useState([]);
   const [counter, setCounter] = useState(0);
-  const [inputValue, setInputValue] = useState('');
+  const [skillInput, setSkillInput] = useState('');
 
-  // Functions
   const addTodo = () => {
     setTodos([...todos, 'New todo']);
+  };
+
+  const addSkill = () => {
+    if (skillInput.length > 5) {
+      setSkills([...skills, skillInput]);
+      setSkillInput('');
+    } else {
+      alert('Skill must be more than 5 characters.');
+    }
   };
 
   const increment = () => {
     setCounter(counter + 1);
   };
 
-  const handleSubmit = () => {
-    if (inputValue.length > 5) {
-      setTodos([...todos, inputValue]);
-      setInputValue('');
-    } else {
-      alert('Task must be more than 5 characters.');
-    }
-  };
-
-  // useMemo: expensive calculation
   const expensiveCount = useMemo(() => {
     console.log('Calculating expensive value...');
     return counter * 2;
-  }, [counter]);
-
-  // Another useMemo example: squared counter
-  const squaredValue = useMemo(() => {
-    console.log('Squaring count...');
-    return counter * counter;
   }, [counter]);
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>Task Management App with React Memo</h1>
 
-      <button onClick={addTodo}>Add Todo</button>
-
-      <ul>
-        {todos.map((todo, index) => (
-          <li key={index}>{todo}</li>
-        ))}
-      </ul>
+      {/* Use Memo section */}
+      <div style={{ marginTop: '20px' }}>
+        <button data-cy="add-todo" onClick={addTodo}>Add Todo</button>
+        <ul data-cy="todo-list">
+          {todos.map((todo, index) => (
+            <li key={index}>{todo}</li>
+          ))}
+        </ul>
+      </div>
 
       <div style={{ marginTop: '20px' }}>
-        <button onClick={increment}>Increment Counter</button>
+        <button data-cy="increment" onClick={increment}>Increment Counter</button>
         <p>Counter: {counter}</p>
         <p>Expensive Count (double): {expensiveCount}</p>
-        <p>Squared Count: {squaredValue}</p>
       </div>
 
+      {/* React Memo section for skills */}
       <div style={{ marginTop: '20px' }}>
         <input
+          data-cy="skill-input"
           type="text"
-          placeholder="Enter task > 5 chars"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Enter skill > 5 chars"
+          value={skillInput}
+          onChange={(e) => setSkillInput(e.target.value)}
         />
-        <button onClick={handleSubmit}>Submit Custom Task</button>
+        <button data-cy="add-skill" onClick={addSkill}>Add Skill</button>
       </div>
 
-      <ReactMemoComponent todos={todos} />
+      <ReactMemoComponent skills={skills} />
     </div>
   );
 }
