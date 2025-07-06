@@ -1,8 +1,7 @@
 // <p>Now I can render any React component on any DOM node I want using ReactDOM.render</p>
 
 
-
- import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 
 const ReactMemoComponent = React.memo(({ skills }) => {
   console.log('Rendering React.memo Component...');
@@ -50,9 +49,9 @@ function App() {
     <div style={{ padding: '20px' }}>
       <h1>Task Management App with React Memo</h1>
 
-      {/* Use Memo section */}
+      {/* Use Memo testing */}
       <div style={{ marginTop: '20px' }}>
-        <button data-cy="add-todo" onClick={addTodo}>Add Todo</button>
+        <button data-cy="add-todo" onClick={addTodo}>Add todo</button>
         <ul data-cy="todo-list">
           {todos.map((todo, index) => (
             <li key={index}>{todo}</li>
@@ -61,12 +60,12 @@ function App() {
       </div>
 
       <div style={{ marginTop: '20px' }}>
-        <button data-cy="increment" onClick={increment}>Increment Counter</button>
+        <button onClick={increment}>Increment Counter</button>
         <p>Counter: {counter}</p>
         <p>Expensive Count (double): {expensiveCount}</p>
       </div>
 
-      {/* React Memo section for skills */}
+      {/* React Memo testing */}
       <div style={{ marginTop: '20px' }}>
         <input
           data-cy="skill-input"
@@ -75,7 +74,7 @@ function App() {
           value={skillInput}
           onChange={(e) => setSkillInput(e.target.value)}
         />
-        <button data-cy="add-skill" onClick={addSkill}>Add Skill</button>
+        <button data-cy="add-skill" onClick={addSkill}>Add skill</button>
       </div>
 
       <ReactMemoComponent skills={skills} />
